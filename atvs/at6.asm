@@ -1,86 +1,62 @@
 .data
 nota1: .asciiz "nota primeiro bimestre: "
 nota2: .asciiz "nota segundo bimestre: "
-nota3: .asciiz "nota terceiro bimestre: "
-nota4: .asciiz "nota quarto bimestre: "
+msg1: .asciiz "\n a primeira nota e maior"
+msg2:.asciiz "\n a segunda nota e maior"
 media: .asciiz "sua media é: "
-aprovado_msg: .asciiz " voce foi aprovado:)"
-recuperacao_msg: .asciiz " voce esta de recuperação:|"
-reprovado_msg: .asciiz " voce foi reprovado :("
+med: .float 2.0
+num_30: .float 29.0
+num_60: .float 59.0
+def: .float 0.0
 .text
-#comparador
-addi $s1, $zero,60
-addi $s2, $zero,30
-addi $s3, $zero,4
+#comparador/////////////////////////////////
+lwc1 $f10, med
+lwc1 $f9, num_30
+lwc1 $f11, num_60
 
-#numero 
+#atribuição de variaveis numero /////////////
 li $v0, 4 
 la $a0, nota1
 syscall  
-li $v0, 5 
+li $v0, 6
 syscall 
-move $t1, $v0 
+mov.s $f1, $f0 
 
 li $v0, 4 
 la $a0, nota2
 syscall  
-li $v0, 5 
+li $v0, 6
 syscall 
-move $t2, $v0 
+mov.s $f2, $f0 
 
-li $v0, 4 
-la $a0, nota3
-syscall  
-li $v0, 5 
-syscall 
-move $t3, $v0 
+# calculo da media/////////////////////////
+add.s $f5, $f2,$f1
 
-li $v0, 4 
-la $a0, nota4
-syscall  
-li $v0, 5 
-syscall 
-move $t4, $v0
+div.s $f12, $f5,$f10
 
-add $t5, $t2,$t1
-add $t6, $t3,$t4
-add $t7, $t6,$t5
-
-div $t8, $t7,$s3
-
+#print do resultado da media //////////////
 li $v0, 4
 la $a0, media
 syscall
-li $v0, 1
-move $a0, $t8
+li $v0, 2
+mov.s $f14, $f12
 syscall
-#comparação
 
-blt $t8, $s2, menor
-bge $t8, $s2, compar_maior
+#comparações de medias(AP, RP, RC)//////////
 
-menor:
+c.le.s $f2, $f1
+bc1t menor
+bc1f maior
+ 
+ menor:
 li $v0, 4 
-la $a0, reprovado_msg
+la $a0, msg1
 syscall
-li, $v0, 10
-syscall 
-
-compar_maior:
-blt $t8, $s1, recuperacao
-bge $t8, $s1, aprovado
-
-recuperacao:
+li $v0, 10
+syscall
+ maior:
 li $v0, 4 
-la $a0, recuperacao_msg
+la $a0, msg2
 syscall
-li, $v0, 10
+li $v0, 10
 syscall
-
-aprovado:
-li $v0, 4 
-la $a0, aprovado_msg
-syscall 
-li $v0,10
-syscall
-

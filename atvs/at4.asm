@@ -1,5 +1,5 @@
 .data
-valor: .asciiz "digiteo valor de seu sakario: "
+valor: .asciiz "digiteo valor de seu salario: "
 gasto: .asciiz "digite valor de seus gastos: "
 receita: .asciiz "seu saldo e: "
 .text
